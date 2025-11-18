@@ -5,33 +5,48 @@
   <title>BTC News Portal - Ángel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    :root {
+      --bg: #020617;
+      --bg-card: #020617;
+      --border: #1f2937;
+      --accent: #22c55e;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.6);
+    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #020617;
-      color: #e5e7eb;
+      background: radial-gradient(circle at top, #111827 0, #020617 55%);
+      color: var(--text-main);
     }
     header {
-      padding: 16px 24px;
-      background: #0f172a;
+      padding: 14px 20px;
+      background: rgba(15, 23, 42, 0.95);
       border-bottom: 1px solid #1e293b;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
     }
     .logo {
       font-weight: 700;
       font-size: 1.1rem;
+      letter-spacing: 0.03em;
     }
     .logo span {
-      color: #22c55e;
+      color: var(--accent);
     }
     .time {
-      font-size: 0.9rem;
-      color: #9ca3af;
+      font-size: 0.85rem;
+      color: var(--text-muted);
     }
     main {
-      max-width: 960px;
+      max-width: 1040px;
       margin: 0 auto;
       padding: 16px;
       display: flex;
@@ -39,17 +54,25 @@
       gap: 16px;
     }
     .card {
-      background: #020617;
+      background: var(--bg-card);
       border-radius: 14px;
-      border: 1px solid #1f2937;
+      border: 1px solid var(--border);
       padding: 16px 18px;
-      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.6);
+      box-shadow: var(--shadow);
     }
     .card h2 {
       margin: 0 0 8px 0;
       font-size: 1rem;
       font-weight: 600;
-      color: #e5e7eb;
+      color: var(--text-main);
+    }
+    .section-title {
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
     .badge {
       display: inline-flex;
@@ -77,42 +100,66 @@
     }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 12px;
       font-size: 0.9rem;
     }
     .metric-label {
-      color: #9ca3af;
+      color: var(--text-muted);
       font-size: 0.8rem;
     }
     .metric-value {
       font-weight: 600;
       margin-top: 2px;
     }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+      font-size: 0.85rem;
+    }
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.8);
+    }
+    .pill-label {
+      color: var(--text-muted);
+      margin-right: 6px;
+    }
+    .pill-value {
+      font-weight: 600;
+    }
     .news-item {
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.8);
+    }
+    .news-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
     }
     .news-title {
       font-weight: 600;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
+      font-size: 0.92rem;
     }
     .news-body {
-      font-size: 0.9rem;
+      font-size: 0.86rem;
       color: #d1d5db;
-    }
-    .section-title {
-      margin-bottom: 6px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #9ca3af;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
     }
     .footer-note {
       font-size: 0.75rem;
       color: #6b7280;
       text-align: center;
       margin: 12px 0 20px;
+    }
+    @media (max-width: 640px) {
+      header { padding: 12px 14px; }
+      main { padding: 12px; }
+      .card { padding: 12px 14px; }
     }
   </style>
 </head>
@@ -143,6 +190,10 @@
         <div class="metric-value" id="risk">—</div>
       </div>
     </div>
+    <div class="pill-row">
+      <div class="pill"><span class="pill-label">Timeframe:</span><span class="pill-value" id="timeframe">—</span></div>
+      <div class="pill"><span class="pill-label">Comentario:</span><span class="pill-value" id="comment-short">—</span></div>
+    </div>
   </section>
 
   <section class="card">
@@ -159,41 +210,77 @@
   </section>
 
   <section class="card">
-    <div class="section-title">Noticias & Eventos</div>
+    <div class="section-title">Noticias & Influencers</div>
     <div id="news-container"></div>
   </section>
 
   <section class="card">
-    <div class="section-title">Conclusión para el trader</div>
-    <div id="conclusion">Actualizá la conclusión aquí.</div>
+    <div class="section-title">Eventos próximos</div>
+    <div id="events-container"></div>
   </section>
 
-  <div class="footer-note">Portal manual: actualiza los datos en este mismo archivo.</div>
+  <section class="card">
+    <div class="section-title">Conclusión para el trader</div>
+    <div id="conclusion">—</div>
+  </section>
+
+  <div class="footer-note">
+    Para actualizar: editar el objeto <code>report</code> en este archivo y guardar.
+  </div>
 </main>
 
 <script>
+  // 🔴🔴🔴  ESTA ES LA ÚNICA PARTE QUE TENÉS QUE EDITAR 🔴🔴🔴
+  // Cuando yo te dé un "informe BTC portal", vos lo pasás a este formato.
   const report = {
-    time: "—",
-    price: "—",
-    bias: "—",
-    driver: "—",
-    risk: "—",
+    time: "18/11/2025 17:45",
+    price: "US$ 93.000",
+    bias: "Neutral-bajista",
+    driver: "Futuros",
+    risk: "Medio-alto",
+    timeframe: "Últimas 24h",
+    commentShort: "Mercado dominado por derivados, flujos spot débiles.",
     metrics: {
-      oiFutures: "—",
-      volFutures: "—",
-      liquidations: "—",
-      lsRatio: "—",
-      funding: "—",
-      exchBalance: "—",
-      etfFlows: "—"
+      oiFutures: "US$ 66.4B",
+      volFutures: "US$ 176B",
+      liquidations: "US$ 508M (mayoría largos)",
+      lsRatio: "0.90 (más shorts que longs)",
+      funding: "+0.0068% (ligeramente positivo)",
+      exchBalance: "2.3M BTC (tendencia a la baja)",
+      etfFlows: "-US$ 254.5M neto"
     },
-    news: [],
-    conclusion: "—"
+    news: [
+      {
+        importance: 85,
+        title: "BTC pierde los US$ 90k por presión de salidas en ETFs",
+        body: "Las salidas acumuladas de ETFs spot se acercan a los US$ 2.9B en la semana, debilitando el soporte institucional."
+      },
+      {
+        importance: 60,
+        title: "Mercado de futuros con OI elevado y funding positivo",
+        body: "Mucho apalancamiento en largos; si el precio sigue cayendo, hay riesgo de más liquidaciones en cascada."
+      }
+    ],
+    events: [
+      {
+        importance: 80,
+        title: "Dato de inflación (CPI) EE.UU.",
+        body: "Si sale por encima de lo esperado, aumenta la probabilidad de política monetaria más dura y presión bajista sobre BTC."
+      },
+      {
+        importance: 72,
+        title: "Reunión de la Fed (FOMC)",
+        body: "Comentarios hawkish pueden golpear a activos de riesgo; tono dovish podría dar aire a BTC."
+      }
+    ],
+    conclusion:
+      "Alta exposición en futuros y salida de ETFs → estructura frágil. Evitar sobreapalancarse y respetar stops hasta ver mejora en flujos spot/institucionales."
   };
+  // 🔴🔴🔴  HASTA ACÁ EDITÁS VOS. LO DE ABAJO NO LO TOCÁS 🔴🔴🔴
 
-  function badgeClass(color) {
-    if (color === "green") return "badge badge-green";
-    if (color === "yellow") return "badge badge-yellow";
+  function badgeClass(importance) {
+    if (importance <= 30) return "badge badge-green";
+    if (importance <= 70) return "badge badge-yellow";
     return "badge badge-red";
   }
 
@@ -203,6 +290,8 @@
     document.getElementById("bias").textContent = r.bias;
     document.getElementById("driver").textContent = r.driver;
     document.getElementById("risk").textContent = r.risk;
+    document.getElementById("timeframe").textContent = r.timeframe;
+    document.getElementById("comment-short").textContent = r.commentShort;
 
     document.getElementById("oi-futures").textContent = r.metrics.oiFutures;
     document.getElementById("vol-futures").textContent = r.metrics.volFutures;
@@ -218,8 +307,8 @@
       const wrap = document.createElement("div");
       wrap.className = "news-item";
       const badge = document.createElement("span");
-      badge.className = badgeClass(item.color);
-      badge.textContent = `Importante (${item.importance || "?"})`;
+      badge.className = badgeClass(item.importance);
+      badge.textContent = `Importante (${item.importance})`;
       const title = document.createElement("div");
       title.className = "news-title";
       title.textContent = item.title;
@@ -232,10 +321,30 @@
       newsContainer.appendChild(wrap);
     });
 
+    const eventsContainer = document.getElementById("events-container");
+    eventsContainer.innerHTML = "";
+    r.events.forEach(item => {
+      const wrap = document.createElement("div");
+      wrap.className = "news-item";
+      const badge = document.createElement("span");
+      badge.className = badgeClass(item.importance);
+      badge.textContent = `Importante (${item.importance})`;
+      const title = document.createElement("div");
+      title.className = "news-title";
+      title.textContent = item.title;
+      const body = document.createElement("div");
+      body.className = "news-body";
+      body.textContent = item.body;
+      wrap.appendChild(badge);
+      wrap.appendChild(title);
+      wrap.appendChild(body);
+      eventsContainer.appendChild(wrap);
+    });
+
     document.getElementById("conclusion").textContent = r.conclusion;
   }
 
-  renderReport(report);
+  document.addEventListener("DOMContentLoaded", () => renderReport(report));
 </script>
 </body>
 </html>
